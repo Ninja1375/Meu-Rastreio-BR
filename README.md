@@ -1,29 +1,19 @@
 O **Meu Rastreio BR** é uma plataforma que permite aos usuários rastrear o status de suas encomendas utilizando um código de rastreamento. Esse tipo de sistema é amplamente utilizado em e-commerce e serviços de entrega para garantir que os clientes possam acompanhar o andamento do transporte de seus produtos de forma rápida e fácil. A seguir está uma descrição detalhada de suas funcionalidades e design:
 
 ## Funcionalidades Principais: ##
-*Interface de Rastreamento de Encomendas:*
+**1 - Interface de Rastreamento de Encomendas:**
 
-**Campo de entrada do código de rastreamento:** 
+**Campo de entrada do código de rastreamento:** Os usuários podem inserir o código de rastreamento fornecido pela empresa de logística para verificar o status atual da encomenda.
 
-Os usuários podem inserir o código de rastreamento fornecido pela empresa de logística para verificar o status atual da encomenda.
+**Botão de busca:** Um botão visível, estilizado para ser intuitivo, que ao ser clicado, ativa a busca dos dados da encomenda.
 
-**Botão de busca:**
+**Indicador de carregamento:** Um ícone de carregamento que aparece enquanto o sistema realiza a busca das informações, para informar ao usuário que o processo está em andamento.
 
-Um botão visível, estilizado para ser intuitivo, que ao ser clicado, ativa a busca dos dados da encomenda.
+**Resultado do rastreamento:** Após a busca, o sistema exibe as informações detalhadas sobre o status da encomenda, como a localização atual, data prevista de entrega e eventos anteriores (por exemplo, se a encomenda saiu para entrega ou chegou a um centro de distribuição).
 
-**Indicador de carregamento:**
+**Ícones de status:** Usados para tornar o feedback visual mais claro, como um ícone verde para "entregue" e um ícone azul para "em trânsito".
 
-Um ícone de carregamento que aparece enquanto o sistema realiza a busca das informações, para informar ao usuário que o processo está em andamento.
-
-**Resultado do rastreamento:** 
-
-Após a busca, o sistema exibe as informações detalhadas sobre o status da encomenda, como a localização atual, data prevista de entrega e eventos anteriores (por exemplo, se a encomenda saiu para entrega ou chegou a um centro de distribuição).
-
-**Ícones de status:**
-
-Usados para tornar o feedback visual mais claro, como um ícone verde para "entregue" e um ícone azul para "em trânsito".
-
-**Histórico de Pesquisas:**
+**2 - Histórico de Pesquisas:**
 
 Cada vez que o usuário realiza uma busca, o sistema mantém um histórico das encomendas pesquisadas. Assim, o usuário pode rapidamente acessar os rastreamentos anteriores sem precisar inserir novamente o código.
 
@@ -48,7 +38,7 @@ Mensagens de Erro e Validação:
 
 Validação de código: Caso o usuário insira um código inválido ou em um formato incorreto, o sistema exibe uma mensagem de erro clara e amigável, pedindo ao usuário para revisar o código.
 Feedback amigável: Além das mensagens de erro, o sistema também fornece mensagens de sucesso ou de situação, como "Encomenda em trânsito", "Encomenda entregue", etc., tornando a interação mais amigável e informativa.
-Rodapé informativo:
+**6 - Rodapé informativo:**
 
 O sistema contém um rodapé fixo com informações de contato, links úteis e acesso rápido a páginas de política de privacidade e termos de uso. Isso torna o sistema mais profissional e confiável aos olhos dos usuários.
 Descrição de Elementos Visuais:
