@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Rastreamento de Encomenda dos Correios">
+    <meta name="keywords" content="HTML, CSS, JavaScript, Rastrear Encomendas, Correios">
+    <meta name="author" content="Antônio Nascimento">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Meu Rastreio Br</title>
+</head>
+<body>
+
+<header>
+    <nav class="navbar"><a class="logo" href="/index.html">Inicio</a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#sobre" class="nav-link">Sobre</a></li>
+            <li class="nav-item"><a href="#politica" class="nav-link">Política de Privacidade</a></li>
+            <li class="nav-item"><a href="#contato" class="nav-link">Contato</a></li>
+        </ul>
+        <div class="hamburguer">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+</header>
+
+    <section class="container form-container fade-in">
+    <h1>Meu Rastreio BR</h1>
+    <div id="tracking-form">
+    <label for="codigo" class="obs">Código de Rastreio:</label>
+    <input type="text" id="codigo" placeholder="Ex: AB123456789BR" class="codigo">
+    <button id="buscar-encomenda" class="buscar">Buscar Encomenda</button></div>
+    <div id="loading">
+    <i class="fas fa-sync-alt fa-pulse fa-2x" style="color: orange;"></i>
+    <p class="objeto">Buscando objeto...</p></div>
+    <div id="result"></div></section>
+    <section class="centered-container">
+    <div id="recent-accesses-section" class="section" style="display:none;">
+    <h2 class="fade-in">Últimos Acessos</h2>
+    <div id="recent-accesses"></div></div>
+    <div id="history-section" class="section" style="display:none;">
+    <h2 class="fade-in">Histórico de Rastreamento</h2>
+    <div id="history"></div>
+
+    <div id="confirmation-dialog" class="confirmation-dialog">
+    <div class="confirmation-box">
+    <p>Você tem certeza que deseja remover este item do histórico?</p>
+    <div class="confirmation-buttons">
+    <button class="yes" id="confirm-yes">Sim</button>
+    <button class="no" id="confirm-no">Não</button>
+</div></div></div></section>
+
+<section id="sobre" class="sobre fade-in">
+    <h2 class="fade-in">Sobre</h2>
+    <p>Bem-vindo ao Meu Rastreio BR! </p>
+    <p>Somos uma plataforma dedicada a facilitar o rastreamento de suas encomendas, proporcionando uma experiência simples e eficiente.</p>
+        
+    <h3 class="fade-in">Nossa Missão:</h3>
+    <p>Nossa missão é oferecer uma solução prática para que você possa acompanhar suas encomendas em tempo real.<br> Sabemos o quão importante é estar atualizado sobre o status das suas entregas, e estamos aqui para tornar isso o mais fácil possível.</p>
+        
+    <h3 class="fade-in">Como Funciona:</h3>
+    <p>Utilizando a API do <a href="https://linketrack.com/" target="_blank">linketrack.com</a>, conseguimos fornecer informações precisas e atualizadas sobre o status de suas encomendas. <br>Basta inserir o código de rastreamento no campo indicado e clicar em "Buscar Encomenda".</p>
+</section>
+
+<section id="politica" class="politica fade-in">
+    <h2 class="fade-in">Política de Privacidade</h2>
+    <p>Última atualização: 05 de Outubro de 2024!</p>
+    <p>Bem-vindo ao nosso site de rastreamento de encomendas.<br>Esta Política de Privacidade descreve como coletamos, usamos, divulgamos e protegemos suas informações pessoais quando você usa nosso serviço.<br>Ao acessar ou utilizar nosso site, você concorda com as práticas descritas nesta política.<br></p>
+
+    <h3 class="fade-in">1. Informações que Coletamos:</h3>
+
+    <p>1.1. Informações de Identificação Pessoal:<br>Podemos coletar informações de identificação pessoal, como nome, endereço de e-mail e número de telefone, quando você se registra em nosso site ou entra em contato conosco para suporte.<br>
+
+1.2. Informações de Rastreamento de Encomendas: <br>Quando você usa nosso serviço para rastrear encomendas, coletamos informações relacionadas à encomenda, como números de rastreamento e detalhes de remessa. <br>Esta informação é obtida através da API pública do Linketrack.com.<br>
+
+1.3. Informações de Uso:<br> Coletamos informações sobre como você usa nosso site, incluindo o tipo de dispositivo que você está usando, seu endereço IP, tempo de acesso, páginas visitadas e ações realizadas no site.<br></p>
+
+    <h3 class="fade-in">2. Como Usamos Suas Informações:</h3>
+
+    <p>2.1. Prestação de Serviços:<br> Utilizamos suas informações de identificação pessoal e informações de rastreamento de encomendas para fornecer e melhorar nosso serviço de rastreamento de encomendas.<br>
+
+2.2. Comunicações: <br>Podemos usar suas informações de contato para enviar atualizações sobre sua encomenda, responder a consultas e fornecer suporte ao cliente.<br>
+
+2.3. Melhorias do Site:<br> Utilizamos informações de uso para entender como nossos usuários interagem com nosso site e para aprimorar a funcionalidade e a experiência do usuário.<br></p>
+
+    <h3 class="fade-in">3. Compartilhamento de Informações:</h3><p>
+
+3.1. Provedores de Serviço:<br> Podemos compartilhar suas informações com terceiros que nos ajudam a operar nosso site e fornecer nossos serviços, como provedores de hospedagem e serviços de análise.<br>
+
+3.2. API do Linketrack.com:<br>Para realizar o rastreamento das encomendas, compartilhamos informações de rastreamento de encomendas com a API pública do <a href="https://linketrack.com/" target="_blank">linketrack.com</a><br>
+
+3.3. Exigências Legais:<br>Podemos divulgar suas informações se exigido por lei ou em resposta a solicitações legais válidas por autoridades públicas, incluindo para atender a requisitos de segurança nacional ou de aplicação da lei.<br></p>
+
+    <h3 class="fade-in">4. Segurança de Dados:</h3><p>
+
+Tomamos medidas de segurança razoáveis para proteger suas informações pessoais contra perda, uso indevido e acesso não autorizado, divulgação, alteração e destruição.<br> No entanto, nenhum método de transmissão pela Internet ou método de armazenamento eletrônico é 100% seguro.<br></p>
+
+    <h3 class="fade-in">5. Seus Direitos:</h3><p>
+
+Você tem o direito de acessar, corrigir, atualizar ou excluir suas informações pessoais.<br>Para exercer esses direitos, entre em contato conosco usando as informações de contato fornecidas abaixo.<br></p>
+
+    <h3 class="fade-in">6. Alterações a Esta Política de Privacidade:</h3><p>
+
+Podemos atualizar esta Política de Privacidade periodicamente.<br> Notificaremos você sobre quaisquer mudanças significativas publicando a nova política em nosso site.<br> Recomendamos que você reveja esta política regularmente para se manter informado sobre como estamos protegendo suas informações.<br></p>
+
+    <h3 class="fade-in">7. Contato:</h3><p>
+
+Se você tiver alguma dúvida sobre esta Política de Privacidade, entre em contato conosco através do nosso <a href="#contato">Formulário de contato</a><br></p>
+
+    <h3 class="fade-in">8. Links Externos:</h3><p>
+
+Nosso site pode conter links para outros sites.<br> Não nos responsabilizamos pelas práticas de privacidade ou pelo conteúdo desses sites. <br>Recomendamos que você leia as políticas de privacidade de cada site que visitar.<br>
+
+Agradecemos por confiar em nosso serviço de rastreamento de encomendas.<br> Sua privacidade é importante para nós.</p>
+</section>
+
+<section id="contato" class="contato fade-in">
+    <h2>Contato</h2>
+    <form action="https://formspree.io/f/mjkbvpdv" method="POST">
+        <input type="text" name="name" placeholder="Seu nome" required>
+        <input type="email" name="email" placeholder="Seu email" required>
+        <textarea name="message" placeholder="Sua mensagem" required></textarea>
+        <button type="submit" class="btn">Enviar Mensagem</button>
+    </form>
+</section>
+
+<footer>
+    <p>Desenvolvido por <a href="https://ninja1375.github.io/Meu-Portfolio/" target="_blank">Antônio Nascimento</a> © 2024 </p>
+    <p>Este site utiliza API pública do <a href="https://linketrack.com/" target="_blank">linketrack.com</a></p>
+</footer>
+
+<script>
+    const hamburguer = document.querySelector(".hamburguer");
+    const navMenu = document.querySelector(".nav-menu");
+
+    hamburguer.addEventListener("click", () => {
+        hamburguer.classList.toggle("active");
+        navMenu.classList.toggle("active");
+    });
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            }
+        });
+    });
+
+    document.querySelectorAll('.fade-in').forEach(section => {
+        observer.observe(section);
+    });
+</script>
+<script src="script.js"></script>
+</body>
+</html>
