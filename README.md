@@ -17,29 +17,29 @@ O **Meu Rastreio BR** é uma plataforma que permite aos usuários rastrear o sta
 
 Cada vez que o usuário realiza uma busca, o sistema mantém um histórico das encomendas pesquisadas. Assim, o usuário pode rapidamente acessar os rastreamentos anteriores sem precisar inserir novamente o código.
 
-**Botão de exclusão:**
+**Botão de exclusão:** Para manter o histórico organizado, há um botão de "excluir", permitindo que o usuário remova entradas antigas ou irrelevantes do histórico.
 
-Para manter o histórico organizado, há um botão de "excluir", permitindo que o usuário remova entradas antigas ou irrelevantes do histórico.
-
-**Diálogo de confirmação:** 
-
-Ao clicar para excluir uma entrada do histórico, o sistema solicita uma confirmação para evitar exclusões acidentais.
+**Diálogo de confirmação:** Ao clicar para excluir uma entrada do histórico, o sistema solicita uma confirmação para evitar exclusões acidentais.
 
 **3 - Compartilhamento de Informações:**
 
-Botões de compartilhamento: O sistema oferece várias opções de compartilhamento, como enviar informações de rastreamento via WhatsApp, SMS, e-mail ou até gerar uma impressão da página com os detalhes da encomenda. Cada um desses botões é estilizado com cores e ícones específicos para indicar a funcionalidade correspondente.
-Visual limpo e organizado: Cada botão de compartilhamento tem uma cor de fundo própria, como verde para WhatsApp, azul para SMS, vermelho para e-mail e amarelo para impressão. Isso facilita a identificação e o uso das funcionalidades.
+**Botões de compartilhamento:** O sistema oferece várias opções de compartilhamento, como enviar informações de rastreamento via WhatsApp, SMS, e-mail ou até gerar uma impressão da página com os detalhes da encomenda. Cada um desses botões é estilizado com cores e ícones específicos para indicar a funcionalidade correspondente.
+
+**Visual limpo e organizado:** Cada botão de compartilhamento tem uma cor de fundo própria, como verde para WhatsApp, azul para SMS, vermelho para e-mail e amarelo para impressão. Isso facilita a identificação e o uso das funcionalidades.
 
 **4 - Design Responsivo:**
 
-Menu de navegação: O menu é fixo na parte superior da página, facilitando a navegação e permitindo que o usuário acesse rapidamente outras seções do sistema sem perder o ponto em que estava.
-Menu de hambúrguer: Em dispositivos móveis, o menu de navegação é colapsado em um ícone de hambúrguer, que pode ser expandido para exibir as opções. Isso economiza espaço e mantém a interface limpa em telas menores.
-Layout ajustável: O sistema está otimizado para diferentes resoluções de tela, garantindo que o conteúdo seja exibido corretamente tanto em computadores de mesa quanto em smartphones ou tablets.
+**Menu de navegação:** O menu é fixo na parte superior da página, facilitando a navegação e permitindo que o usuário acesse rapidamente outras seções do sistema sem perder o ponto em que estava.
+
+**Menu de hambúrguer:** Em dispositivos móveis, o menu de navegação é colapsado em um ícone de hambúrguer, que pode ser expandido para exibir as opções. Isso economiza espaço e mantém a interface limpa em telas menores.
+
+**Layout ajustável:** O sistema está otimizado para diferentes resoluções de tela, garantindo que o conteúdo seja exibido corretamente tanto em computadores de mesa quanto em smartphones ou tablets.
 
 **5 - Mensagens de Erro e Validação:**
 
-Validação de código: Caso o usuário insira um código inválido ou em um formato incorreto, o sistema exibe uma mensagem de erro clara e amigável, pedindo ao usuário para revisar o código.
-Feedback amigável: Além das mensagens de erro, o sistema também fornece mensagens de sucesso ou de situação, como "Encomenda em trânsito", "Encomenda entregue", etc., tornando a interação mais amigável e informativa.
+**Validação de código:** Caso o usuário insira um código inválido ou em um formato incorreto, o sistema exibe uma mensagem de erro clara e amigável, pedindo ao usuário para revisar o código.
+
+**Feedback amigável:** Além das mensagens de erro, o sistema também fornece mensagens de sucesso ou de situação, como "Encomenda em trânsito", "Encomenda entregue", etc., tornando a interação mais amigável e informativa.
 
 **6 - Rodapé informativo:**
 
