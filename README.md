@@ -43,12 +43,14 @@ Cada vez que o usuário realiza uma busca, o sistema mantém um histórico das e
 
 **6 - Rodapé informativo:**
 
-O sistema contém um rodapé fixo com informações de contato, links úteis e acesso rápido a páginas de política de privacidade e termos de uso. Isso torna o sistema mais profissional e confiável aos olhos dos usuários.
+O sistema contém um rodapé fixo com informações de links úteis e acesso rápido a páginas. Isso torna o sistema mais profissional e confiável aos olhos dos usuários.
 
 ## Descrição de Elementos Visuais: ##
 
-Tema visual: O sistema utiliza cores neutras para o fundo, como cinza claro, que contrastam bem com os botões e informações principais, garantindo legibilidade e um visual moderno.
-Tipografia: A fonte escolhida é simples e de fácil leitura, com tamanhos que variam conforme a importância do conteúdo (títulos maiores, informações de status em tamanhos médios, e detalhes menores em fontes mais discretas).
+**Tema visual:** O sistema utiliza cores neutras para o fundo, como cinza claro, que contrastam bem com os botões e informações principais, garantindo legibilidade e um visual moderno.
+
+**Tipografia:** A fonte escolhida é simples e de fácil leitura, com tamanhos que variam conforme a importância do conteúdo (títulos maiores, informações de status em tamanhos médios, e detalhes menores em fontes mais discretas).
+
 Bordas e sombras: Caixas de conteúdo e botões possuem bordas suaves e leves sombras, que dão um efeito de profundidade e clareza aos diferentes elementos da interface.
 
 ## Segurança e Usabilidade: ##
