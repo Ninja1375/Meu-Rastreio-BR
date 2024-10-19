@@ -1,19 +1,41 @@
 O **Meu Rastreio BR** é uma plataforma que permite aos usuários rastrear o status de suas encomendas utilizando um código de rastreamento. Esse tipo de sistema é amplamente utilizado em e-commerce e serviços de entrega para garantir que os clientes possam acompanhar o andamento do transporte de seus produtos de forma rápida e fácil. A seguir está uma descrição detalhada de suas funcionalidades e design:
 
 ## Funcionalidades Principais: ##
-**Interface de Rastreamento de Encomendas:**
+*Interface de Rastreamento de Encomendas:*
 
-Campo de entrada do código de rastreamento: Os usuários podem inserir o código de rastreamento fornecido pela empresa de logística para verificar o status atual da encomenda.
-Botão de busca: Um botão visível, estilizado para ser intuitivo, que ao ser clicado, ativa a busca dos dados da encomenda.
-Indicador de carregamento: Um ícone de carregamento que aparece enquanto o sistema realiza a busca das informações, para informar ao usuário que o processo está em andamento.
-Resultado do rastreamento: Após a busca, o sistema exibe as informações detalhadas sobre o status da encomenda, como a localização atual, data prevista de entrega e eventos anteriores (por exemplo, se a encomenda saiu para entrega ou chegou a um centro de distribuição).
-Ícones de status: Usados para tornar o feedback visual mais claro, como um ícone verde para "entregue" e um ícone azul para "em trânsito".
-Histórico de Pesquisas:
+**Campo de entrada do código de rastreamento:** 
+
+Os usuários podem inserir o código de rastreamento fornecido pela empresa de logística para verificar o status atual da encomenda.
+
+**Botão de busca:**
+
+Um botão visível, estilizado para ser intuitivo, que ao ser clicado, ativa a busca dos dados da encomenda.
+
+**Indicador de carregamento:**
+
+Um ícone de carregamento que aparece enquanto o sistema realiza a busca das informações, para informar ao usuário que o processo está em andamento.
+
+**Resultado do rastreamento:** 
+
+Após a busca, o sistema exibe as informações detalhadas sobre o status da encomenda, como a localização atual, data prevista de entrega e eventos anteriores (por exemplo, se a encomenda saiu para entrega ou chegou a um centro de distribuição).
+
+**Ícones de status:**
+
+Usados para tornar o feedback visual mais claro, como um ícone verde para "entregue" e um ícone azul para "em trânsito".
+
+**Histórico de Pesquisas:**
 
 Cada vez que o usuário realiza uma busca, o sistema mantém um histórico das encomendas pesquisadas. Assim, o usuário pode rapidamente acessar os rastreamentos anteriores sem precisar inserir novamente o código.
-Botão de exclusão: Para manter o histórico organizado, há um botão de "excluir", permitindo que o usuário remova entradas antigas ou irrelevantes do histórico.
-Diálogo de confirmação: Ao clicar para excluir uma entrada do histórico, o sistema solicita uma confirmação para evitar exclusões acidentais.
-Compartilhamento de Informações:
+
+**Botão de exclusão:**
+
+Para manter o histórico organizado, há um botão de "excluir", permitindo que o usuário remova entradas antigas ou irrelevantes do histórico.
+
+**Diálogo de confirmação:** 
+
+Ao clicar para excluir uma entrada do histórico, o sistema solicita uma confirmação para evitar exclusões acidentais.
+
+**Compartilhamento de Informações:**
 
 Botões de compartilhamento: O sistema oferece várias opções de compartilhamento, como enviar informações de rastreamento via WhatsApp, SMS, e-mail ou até gerar uma impressão da página com os detalhes da encomenda. Cada um desses botões é estilizado com cores e ícones específicos para indicar a funcionalidade correspondente.
 Visual limpo e organizado: Cada botão de compartilhamento tem uma cor de fundo própria, como verde para WhatsApp, azul para SMS, vermelho para e-mail e amarelo para impressão. Isso facilita a identificação e o uso das funcionalidades.
