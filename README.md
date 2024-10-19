@@ -40,14 +40,19 @@ Layout ajustável: O sistema está otimizado para diferentes resoluções de tel
 
 Validação de código: Caso o usuário insira um código inválido ou em um formato incorreto, o sistema exibe uma mensagem de erro clara e amigável, pedindo ao usuário para revisar o código.
 Feedback amigável: Além das mensagens de erro, o sistema também fornece mensagens de sucesso ou de situação, como "Encomenda em trânsito", "Encomenda entregue", etc., tornando a interação mais amigável e informativa.
+
 **6 - Rodapé informativo:**
 
 O sistema contém um rodapé fixo com informações de contato, links úteis e acesso rápido a páginas de política de privacidade e termos de uso. Isso torna o sistema mais profissional e confiável aos olhos dos usuários.
-Descrição de Elementos Visuais:
+
+## Descrição de Elementos Visuais: ##
+
 Tema visual: O sistema utiliza cores neutras para o fundo, como cinza claro, que contrastam bem com os botões e informações principais, garantindo legibilidade e um visual moderno.
 Tipografia: A fonte escolhida é simples e de fácil leitura, com tamanhos que variam conforme a importância do conteúdo (títulos maiores, informações de status em tamanhos médios, e detalhes menores em fontes mais discretas).
 Bordas e sombras: Caixas de conteúdo e botões possuem bordas suaves e leves sombras, que dão um efeito de profundidade e clareza aos diferentes elementos da interface.
-Segurança e Usabilidade:
+
+## Segurança e Usabilidade: ##
+
 Proteção de dados: O sistema garante a segurança das informações inseridas pelos usuários, evitando o compartilhamento indevido de dados sensíveis, como os códigos de rastreamento. Além disso, o uso de HTTPS é obrigatório para proteger as comunicações.
 Facilidade de uso: Todo o sistema é projetado para ser simples e direto. O foco é fornecer ao usuário uma maneira rápida de obter as informações que deseja sem distrações ou complicações.
 Funcionalidade Técnica:
