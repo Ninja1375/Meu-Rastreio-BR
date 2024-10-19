@@ -1,7 +1,7 @@
-O sistema de busca de encomendas é uma plataforma que permite aos usuários rastrear o status de suas encomendas utilizando um código de rastreamento. Esse tipo de sistema é amplamente utilizado em e-commerce e serviços de entrega para garantir que os clientes possam acompanhar o andamento do transporte de seus produtos de forma rápida e fácil. A seguir está uma descrição detalhada de suas funcionalidades e design:
+O **Meu Rastreio BR** é uma plataforma que permite aos usuários rastrear o status de suas encomendas utilizando um código de rastreamento. Esse tipo de sistema é amplamente utilizado em e-commerce e serviços de entrega para garantir que os clientes possam acompanhar o andamento do transporte de seus produtos de forma rápida e fácil. A seguir está uma descrição detalhada de suas funcionalidades e design:
 
-Funcionalidades Principais:
-Interface de Rastreamento de Encomendas:
+## Funcionalidades Principais: ##
+**Interface de Rastreamento de Encomendas:**
 
 Campo de entrada do código de rastreamento: Os usuários podem inserir o código de rastreamento fornecido pela empresa de logística para verificar o status atual da encomenda.
 Botão de busca: Um botão visível, estilizado para ser intuitivo, que ao ser clicado, ativa a busca dos dados da encomenda.
