@@ -51,17 +51,19 @@ O sistema contém um rodapé fixo com informações de links úteis e acesso rá
 
 **Tipografia:** A fonte escolhida é simples e de fácil leitura, com tamanhos que variam conforme a importância do conteúdo (títulos maiores, informações de status em tamanhos médios, e detalhes menores em fontes mais discretas).
 
-Bordas e sombras: Caixas de conteúdo e botões possuem bordas suaves e leves sombras, que dão um efeito de profundidade e clareza aos diferentes elementos da interface.
+**Bordas e sombras:** Caixas de conteúdo e botões possuem bordas suaves e leves sombras, que dão um efeito de profundidade e clareza aos diferentes elementos da interface.
 
 ## Segurança e Usabilidade: ##
 
-Proteção de dados: O sistema garante a segurança das informações inseridas pelos usuários, evitando o compartilhamento indevido de dados sensíveis, como os códigos de rastreamento. Além disso, o uso de HTTPS é obrigatório para proteger as comunicações.
-Facilidade de uso: Todo o sistema é projetado para ser simples e direto. O foco é fornecer ao usuário uma maneira rápida de obter as informações que deseja sem distrações ou complicações.
+**Proteção de dados:** O sistema garante a segurança das informações inseridas pelos usuários, evitando o compartilhamento indevido de dados sensíveis, como os códigos de rastreamento. Além disso, o uso de HTTPS é obrigatório para proteger as comunicações.
+
+**Facilidade de uso:** Todo o sistema é projetado para ser simples e direto. O foco é fornecer ao usuário uma maneira rápida de obter as informações que deseja sem distrações ou complicações.
 
 ## Funcionalidade Técnica: ##
 
-Integração com APIs de transporte: O sistema se comunica com serviços de logística, como Correios ou empresas privadas de transporte, para consultar os dados das encomendas. Isso é feito por meio de APIs (interfaces de programação de aplicações), que buscam informações em tempo real diretamente dos servidores das transportadoras.
-Processamento de requisições assíncronas: A busca de informações sobre as encomendas é feita de forma assíncrona, utilizando tecnologias como AJAX, que permite ao usuário continuar navegando sem precisar esperar que a página seja recarregada.
+**Integração com APIs de transporte:** O sistema se comunica com serviços de logística, como Correios ou empresas privadas de transporte, para consultar os dados das encomendas. Isso é feito por meio de APIs (interfaces de programação de aplicações), que buscam informações em tempo real diretamente dos servidores das transportadoras.
+
+**Processamento de requisições assíncronas:** A busca de informações sobre as encomendas é feita de forma assíncrona, utilizando tecnologias como AJAX, que permite ao usuário continuar navegando sem precisar esperar que a página seja recarregada.
 
 ## Uso Prático: ##
 
