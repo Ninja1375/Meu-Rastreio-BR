@@ -55,11 +55,16 @@ Bordas e sombras: Caixas de conteúdo e botões possuem bordas suaves e leves so
 
 Proteção de dados: O sistema garante a segurança das informações inseridas pelos usuários, evitando o compartilhamento indevido de dados sensíveis, como os códigos de rastreamento. Além disso, o uso de HTTPS é obrigatório para proteger as comunicações.
 Facilidade de uso: Todo o sistema é projetado para ser simples e direto. O foco é fornecer ao usuário uma maneira rápida de obter as informações que deseja sem distrações ou complicações.
-Funcionalidade Técnica:
+
+## Funcionalidade Técnica: ##
+
 Integração com APIs de transporte: O sistema se comunica com serviços de logística, como Correios ou empresas privadas de transporte, para consultar os dados das encomendas. Isso é feito por meio de APIs (interfaces de programação de aplicações), que buscam informações em tempo real diretamente dos servidores das transportadoras.
 Processamento de requisições assíncronas: A busca de informações sobre as encomendas é feita de forma assíncrona, utilizando tecnologias como AJAX, que permite ao usuário continuar navegando sem precisar esperar que a página seja recarregada.
-Uso Prático:
+
+## Uso Prático: ##
+
 O sistema de busca de encomendas é ideal para pessoas que frequentemente compram online ou para empresas que desejam fornecer uma experiência de acompanhamento de envios eficiente para seus clientes. Além de fornecer uma visão clara do status de entrega, o sistema garante que os usuários possam compartilhar essas informações facilmente com terceiros, como familiares ou colegas de trabalho, tornando o processo de rastreamento simples e acessível.
 
-Resumo:
+## Resumo: ##
+
 Em suma, este sistema de busca de encomendas oferece uma solução prática e robusta para quem deseja acompanhar o status de entregas. Com um design responsivo, funcionalidades práticas como compartilhamento e histórico, além de um visual moderno e intuitivo, o sistema é uma excelente ferramenta tanto para consumidores quanto para empresas de e-commerce.
