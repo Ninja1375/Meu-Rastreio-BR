@@ -46,8 +46,8 @@ function isValidTrackingCode(codigo) {
 }
 
 function buscarEncomenda(codigo) {
-    let user = 'teste';
-    let token = '1abcd00b2731640e886fb41a8a9671ad1434c599dbaa0a0de9a5aa619f29a83f';
+    let user = 'antonioninjaa75@gmail.com;
+    let token = 'a8f81873226c88796564b1a452d681a9680bc795ab0082007e38f9c898f091ee';
 
     let url = `https://api.linketrack.com/track/json?user=${user}&token=${token}&codigo=${codigo}`;
 
