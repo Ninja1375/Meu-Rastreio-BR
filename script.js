@@ -45,7 +45,8 @@ function isValidTrackingCode(codigo) {
 }
 
 function buscarEncomenda(codigo) {
-    const apiUrl = `https://www.siterastreio.com.br/api?codigo=${codigo}`;
+    const apiKey = 'SxAnwQWjQJCVZrr6KzB4KCN8Cnd4c-myPaK8YTXl9QM'; // Substitua 'SUA_API_KEY_AQUI' pela sua chave real
+    const apiUrl = `https://www.siterastreio.com.br/api?codigo=${codigo}&apikey=${apiKey}`;
 
     fetch(apiUrl)
         .then(response => {
