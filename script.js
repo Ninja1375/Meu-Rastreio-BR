@@ -18,7 +18,6 @@ buscarEncomendaBtn.addEventListener('click', () => {
         loading.style.display = 'flex';
         trackingForm.style.display = 'none';
         resultDiv.innerHTML = '';
-
         buscarEncomenda(codigo);
         addToRecentAccesses(codigo);
         addToHistory(codigo);
@@ -46,73 +45,131 @@ function isValidTrackingCode(codigo) {
 }
 
 function buscarEncomenda(codigo) {
-    const url = `https://www.siterastreio.com.br/api/track/${codigo}`;
-    const apiKey = "SxAnwQWjQJCVZrr6KzB4KCN8Cnd4c-myPaK8YTXl9QM";
+    const apiUrl = `https://www.siterastreio.com.br/api?codigo=${codigo}`;
 
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-        }
-    })
+    fetch(apiUrl)
         .then(response => {
-            if (!response.ok) throw new Error('Erro na resposta da API');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
         })
         .then(data => {
             loading.style.display = 'none';
             trackingForm.style.display = 'block';
+            resultDiv.innerHTML = '';
 
-            if (data && data.eventos) {
-                let eventos = data.eventos;
+            if (data && data.itens && data.itens.length > 0) {
+                const item = data.itens[0];
+                const codigoRastreio = item.codigo;
 
-                resultDiv.innerHTML = `<h2 class="text-lg font-semibold mb-2">Código: ${codigo}</h2><div class="border-t border-gray-300 pt-4">`;
+                resultDiv.innerHTML += `
+                    <h2 class="text-lg font-semibold mb-2">Código: ${codigoRastreio}</h2>
+                    <div class="border-t border-gray-300 pt-4">
+                `;
 
-                eventos.forEach(evento => {
-                    let icon = '';
-                    const status = evento.status.toLowerCase();
+                if (item.eventos && item.eventos.length > 0) {
+                    item.eventos.forEach(evento => {
+                        let icon = '';
+                        switch (true) {
+                            case evento.status.toLowerCase().includes('entregue'):
+                                icon = '<i class="fas fa-check-circle fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('saiu para entrega'):
+                                icon = '<i class="fas fa-truck fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('encaminhado'):
+                                icon = '<i class="fas fa-arrow-right fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('postado'):
+                                icon = '<i class="fas fa-box fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('recebido'):
+                                icon = '<i class="fas fa-receipt fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('fiscalização'):
+                                icon = '<i class="fas fa-shield-alt fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('aguardando pagamento'):
+                                icon = '<i class="fas fa-money-bill-alt fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('pagamento confirmado'):
+                                icon = '<i class="fas fa-money-check-alt fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('exportação'):
+                                icon = '<i class="fas fa-plane-departure fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('não autorizado'):
+                                icon = '<i class="fas fa-ban fa-4x"></i>';
+                                break;
+                            case evento.status.toLowerCase().includes('devolvido'):
+                                icon = '<i class="fas fa-undo-alt fa-4x"></i>';
+                                break;
+                            default:
+                                icon = '<i class="fas fa-question-circle fa-4x"></i>';
+                                break;
+                        }
 
-                    if (status.includes('entregue')) icon = '<i class="fas fa-check-circle fa-4x"></i>';
-                    else if (status.includes('saiu para entrega')) icon = '<i class="fas fa-truck fa-4x"></i>';
-                    else if (status.includes('encaminhado')) icon = '<i class="fas fa-arrow-right fa-4x"></i>';
-                    else if (status.includes('postado')) icon = '<i class="fas fa-box fa-4x"></i>';
-                    else if (status.includes('recebido')) icon = '<i class="fas fa-receipt fa-4x"></i>';
-                    else if (status.includes('fiscalização')) icon = '<i class="fas fa-shield-alt fa-4x"></i>';
-                    else if (status.includes('pagamento')) icon = '<i class="fas fa-money-bill-alt fa-4x"></i>';
-                    else if (status.includes('devolvido')) icon = '<i class="fas fa-undo-alt fa-4x"></i>';
-                    else icon = '<i class="fas fa-question-circle fa-4x"></i>';
+                        resultDiv.innerHTML += `
+                            <div class="result-item">
+                                <div>${icon}</div>
+                                <hr class="dashed-line">
+                                <div>
+                                    <p class="text-sm text-gray-500">${evento.data} ${evento.hora}</p>
+                                    <p class="text-md">${evento.status}</p>
+                                    <p class="text-sm text-gray-600">${evento.subStatus ? evento.subStatus.join(', ') : ''}</p>
+                                    <p class="text-sm text-gray-600">${evento.local ? evento.local : ''}</p>
+                                    <p class="text-sm text-gray-600">${evento.destino ? evento.destino : ''}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    resultDiv.innerHTML += '<p>Nenhum evento de rastreio encontrado para este código.</p>';
+                }
 
-                    resultDiv.innerHTML += `
-                        <div class="result-item">
-                            <div>${icon}</div>
-                            <hr class="dashed-line">
-                            <div>
-                                <p class="text-sm text-gray-500">${evento.data} ${evento.hora}</p>
-                                <p class="text-md">${evento.status}</p>
-                                <p class="text-sm text-gray-600">${evento.subStatus?.[0] || ''}</p>
-                                <p class="text-sm text-gray-600">${evento.subStatus?.[1] || ''}</p>
+                // Adicionar opções de compartilhar e imprimir
+                resultDiv.innerHTML += `
+                        </div>
+                        <div class="share-container">
+                            <div class="share-button-wrapper">
+                                <button class="share-button whatsapp" onclick="shareWhatsApp('${codigoRastreio}')">
+                                    <i class="fab fa-whatsapp fa-2x"></i>
+                                    WhatsApp
+                                </button>
+                            </div>
+                            <div class="share-button-wrapper">
+                                <button class="share-button sms" onclick="shareSMS('${codigoRastreio}')">
+                                    <i class="fas fa-sms fa-2x"></i>
+                                    SMS
+                                </button>
+                            </div>
+                            <div class="share-button-wrapper">
+                                <button class="share-button email" onclick="shareEmail('${codigoRastreio}')">
+                                    <i class="fas fa-envelope fa-2x"></i>
+                                    Email
+                                </button>
+                            </div>
+                            <div class="share-button-wrapper">
+                                <button class="share-button print" onclick="printPage()">
+                                    <i class="fas fa-print fa-2x"></i>
+                                    Imprimir
+                                </button>
                             </div>
                         </div>
                     `;
-                });
 
-                resultDiv.innerHTML += `</div>
-                    <div class="share-container">
-                        <div class="share-button-wrapper"><button class="share-button whatsapp" onclick="shareWhatsApp('${codigo}')"><i class="fab fa-whatsapp fa-2x"></i>WhatsApp</button></div>
-                        <div class="share-button-wrapper"><button class="share-button sms" onclick="shareSMS('${codigo}')"><i class="fas fa-sms fa-2x"></i>SMS</button></div>
-                        <div class="share-button-wrapper"><button class="share-button email" onclick="shareEmail('${codigo}')"><i class="fas fa-envelope fa-2x"></i>Email</button></div>
-                        <div class="share-button-wrapper"><button class="share-button print" onclick="printPage()"><i class="fas fa-print fa-2x"></i>Imprimir</button></div>
-                    </div>`;
+            } else if (data && data.mensagem) {
+                resultDiv.innerHTML = `<p class="text-red-500">${data.mensagem}</p>`;
             } else {
-                resultDiv.innerHTML = '<p style="color: red;">Nenhum dado encontrado para este código.</p>';
+                resultDiv.innerHTML = '<p>Erro ao obter informações de rastreio.</p>';
             }
         })
         .catch(error => {
-            console.error('Erro ao buscar encomenda:', error);
-            resultDiv.innerHTML = '<p style="color: red;">Erro ao buscar informações de rastreamento.</p>';
             loading.style.display = 'none';
             trackingForm.style.display = 'block';
+            console.error("Erro ao buscar encomenda:", error);
+            resultDiv.innerHTML = '<p class="text-red-500">Ocorreu um erro ao tentar rastrear a encomenda. Por favor, tente novamente mais tarde.</p>';
         });
 }
 
@@ -139,9 +196,11 @@ function printPage() {
 
 function addToRecentAccesses(codigo) {
     let recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
-    recentAccesses = recentAccesses.filter(item => item !== codigo);
-    recentAccesses.unshift(codigo);
-    if (recentAccesses.length > 8) recentAccesses.pop();
+    recentAccesses = recentAccesses.filter(item => item !== codigo); // Remove o código se já existir
+    recentAccesses.unshift(codigo); // Adiciona o novo código no início
+    if (recentAccesses.length > 8) {
+        recentAccesses.pop(); // Remove o código mais antigo se houver mais de 8
+    }
     localStorage.setItem('recentAccesses', JSON.stringify(recentAccesses));
     renderRecentAccesses();
 }
@@ -170,28 +229,36 @@ function removeFromHistory(codigo) {
 function renderRecentAccesses() {
     let recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
     recentAccessesDiv.innerHTML = '';
-    recentAccessesSection.style.display = recentAccesses.length ? 'block' : 'none';
-    recentAccesses.forEach(codigo => {
-        recentAccessesDiv.innerHTML += `
-            <div class="history-item">
-                <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
-            </div>
-        `;
-    });
+    if (recentAccesses.length === 0) {
+        recentAccessesSection.style.display = 'none';
+    } else {
+        recentAccessesSection.style.display = 'block';
+        recentAccesses.forEach(codigo => {
+            recentAccessesDiv.innerHTML += `
+                <div class="history-item">
+                    <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
+                </div>
+            `;
+        });
+    }
 }
 
 function renderHistory() {
     let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
     historyDiv.innerHTML = '';
-    historySection.style.display = history.length ? 'block' : 'none';
-    history.forEach(codigo => {
-        historyDiv.innerHTML += `
-            <div class="history-item">
-                <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
-                <button onclick="confirmRemoveFromHistory('${codigo}')">Remover</button>
-            </div>
-        `;
-    });
+    if (history.length === 0) {
+        historySection.style.display = 'none';
+    } else {
+        historySection.style.display = 'block';
+        history.forEach(codigo => {
+            historyDiv.innerHTML += `
+                <div class="history-item">
+                    <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
+                    <button onclick="confirmRemoveFromHistory('${codigo}')">Remover</button>
+                </div>
+            `;
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
