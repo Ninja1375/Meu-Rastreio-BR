@@ -1,268 +1,226 @@
-let loading = document.getElementById('loading');
-let trackingForm = document.getElementById('tracking-form');
-let resultDiv = document.getElementById('result');
-let codigoInput = document.getElementById('codigo');
-let buscarEncomendaBtn = document.getElementById('buscar-encomenda');
-let recentAccessesSection = document.getElementById('recent-accesses-section');
-let recentAccessesDiv = document.getElementById('recent-accesses');
-let historySection = document.getElementById('history-section');
-let historyDiv = document.getElementById('history');
-let confirmationDialog = document.getElementById('confirmation-dialog');
-let confirmYesBtn = document.getElementById('confirm-yes');
-let confirmNoBtn = document.getElementById('confirm-no');
+const loading = document.getElementById('loading');
+const trackingForm = document.getElementById('tracking-form');
+const resultDiv = document.getElementById('result');
+const codigoInput = document.getElementById('codigo');
+const buscarEncomendaBtn = document.getElementById('buscar-encomenda');
+const recentAccessesSection = document.getElementById('recent-accesses-section');
+const recentAccessesDiv = document.getElementById('recent-accesses');
+const historySection = document.getElementById('history-section');
+const historyDiv = document.getElementById('history');
+const confirmationDialog = document.getElementById('confirmation-dialog');
+const confirmYesBtn = document.getElementById('confirm-yes');
+const confirmNoBtn = document.getElementById('confirm-no');
 let codigoToRemove = null;
 
-buscarEncomendaBtn.addEventListener('click', () => {
-    let codigo = codigoInput.value;
-    if (isValidTrackingCode(codigo)) {
-        loading.style.display = 'flex';
-        trackingForm.style.display = 'none';
-        resultDiv.innerHTML = '';
-        buscarEncomenda(codigo);
-        addToRecentAccesses(codigo);
-        addToHistory(codigo);
-    } else {
-        resultDiv.innerHTML = '<p style="color: red;">Por favor, digite um código de rastreio válido. Exemplo: AB123456789BR</p>';
-    }
+buscarEncomendaBtn.addEventListener('click', async () => {
+  const codigo = codigoInput.value.trim();
+  
+  if (!isValidTrackingCode(codigo)) {
+    resultDiv.innerHTML = `<p class="text-red-500">Por favor, digite um código de rastreio válido. Exemplo: AB123456789BR</p>`;
+    return;
+  }
+
+  loading.style.display = 'flex';
+  trackingForm.style.display = 'none';
+  resultDiv.innerHTML = '';
+
+  await buscarEncomenda(codigo);
+  addToRecentAccesses(codigo);
+  addToHistory(codigo);
 });
 
 confirmYesBtn.addEventListener('click', () => {
-    if (codigoToRemove) {
-        removeFromHistory(codigoToRemove);
-        codigoToRemove = null;
-    }
-    confirmationDialog.style.visibility = 'hidden';
+  if (codigoToRemove) {
+    removeFromHistory(codigoToRemove);
+    codigoToRemove = null;
+  }
+  confirmationDialog.style.visibility = 'hidden';
 });
 
 confirmNoBtn.addEventListener('click', () => {
-    codigoToRemove = null;
-    confirmationDialog.style.visibility = 'hidden';
+  codigoToRemove = null;
+  confirmationDialog.style.visibility = 'hidden';
 });
 
 function isValidTrackingCode(codigo) {
-    let regex = /^[A-Z]{2}\d{9}[A-Z]{2}$/;
-    return regex.test(codigo);
+  const regex = /^[A-Z]{2}\d{9}[A-Z]{2}$/;
+  return regex.test(codigo);
 }
 
-function buscarEncomenda(codigo) {
-    const apiKey = 'SxAnwQWjQJCVZrr6KzB4KCN8Cnd4c-myPaK8YTXl9QM'; // Substitua 'SUA_API_KEY_AQUI' pela sua chave real
-    const apiUrl = `https://api-labs.wonca.com.br/wonca.labs.v1.LabsService/Track?codigo=${codigo}&apikey=${apiKey}`;
+async function buscarEncomenda(codigo) {
+  const apiKey = 'sxaf_bauhc_7ltUUSrdUbLo93cekXHjIgfdk3Ozit7A';
+  const url = 'https://api-labs.wonca.com.br/wonca.labs.v1.LabsService/Track';
 
-    fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            loading.style.display = 'none';
-            trackingForm.style.display = 'block';
-            resultDiv.innerHTML = '';
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Apikey ${apiKey}`
+      },
+      body: JSON.stringify({ code: codigo })
+    });
 
-            if (data && data.itens && data.itens.length > 0) {
-                const item = data.itens[0];
-                const codigoRastreio = item.codigo;
+    if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
 
-                resultDiv.innerHTML += `
-                    <h2 class="text-lg font-semibold mb-2">Código: ${codigoRastreio}</h2>
-                    <div class="border-t border-gray-300 pt-4">
-                `;
+    const data = await response.json();
 
-                if (item.eventos && item.eventos.length > 0) {
-                    item.eventos.forEach(evento => {
-                        let icon = '';
-                        switch (true) {
-                            case evento.status.toLowerCase().includes('entregue'):
-                                icon = '<i class="fas fa-check-circle fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('saiu para entrega'):
-                                icon = '<i class="fas fa-truck fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('encaminhado'):
-                                icon = '<i class="fas fa-arrow-right fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('postado'):
-                                icon = '<i class="fas fa-box fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('recebido'):
-                                icon = '<i class="fas fa-receipt fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('fiscalização'):
-                                icon = '<i class="fas fa-shield-alt fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('aguardando pagamento'):
-                                icon = '<i class="fas fa-money-bill-alt fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('pagamento confirmado'):
-                                icon = '<i class="fas fa-money-check-alt fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('exportação'):
-                                icon = '<i class="fas fa-plane-departure fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('não autorizado'):
-                                icon = '<i class="fas fa-ban fa-4x"></i>';
-                                break;
-                            case evento.status.toLowerCase().includes('devolvido'):
-                                icon = '<i class="fas fa-undo-alt fa-4x"></i>';
-                                break;
-                            default:
-                                icon = '<i class="fas fa-question-circle fa-4x"></i>';
-                                break;
-                        }
+    loading.style.display = 'none';
+    trackingForm.style.display = 'block';
+    resultDiv.innerHTML = '';
 
-                        resultDiv.innerHTML += `
-                            <div class="result-item">
-                                <div>${icon}</div>
-                                <hr class="dashed-line">
-                                <div>
-                                    <p class="text-sm text-gray-500">${evento.data} ${evento.hora}</p>
-                                    <p class="text-md">${evento.status}</p>
-                                    <p class="text-sm text-gray-600">${evento.subStatus ? evento.subStatus.join(', ') : ''}</p>
-                                    <p class="text-sm text-gray-600">${evento.local ? evento.local : ''}</p>
-                                    <p class="text-sm text-gray-600">${evento.destino ? evento.destino : ''}</p>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    resultDiv.innerHTML += '<p>Nenhum evento de rastreio encontrado para este código.</p>';
-                }
+    if (data && data.events && data.events.length > 0) {
+      renderTrackingInfo(codigo, data.events);
+    } else if (data && data.message) {
+      resultDiv.innerHTML = `<p class="text-red-500">${data.message}</p>`;
+    } else {
+      resultDiv.innerHTML = '<p>Informações de rastreamento não encontradas.</p>';
+    }
+  } catch (error) {
+    console.error('Erro:', error);
+    loading.style.display = 'none';
+    trackingForm.style.display = 'block';
+    resultDiv.innerHTML = '<p class="text-red-500">Erro ao buscar encomenda. Tente novamente mais tarde.</p>';
+  }
+}
 
-                // Adicionar opções de compartilhar e imprimir
-                resultDiv.innerHTML += `
-                        </div>
-                        <div class="share-container">
-                            <div class="share-button-wrapper">
-                                <button class="share-button whatsapp" onclick="shareWhatsApp('${codigoRastreio}')">
-                                    <i class="fab fa-whatsapp fa-2x"></i>
-                                    WhatsApp
-                                </button>
-                            </div>
-                            <div class="share-button-wrapper">
-                                <button class="share-button sms" onclick="shareSMS('${codigoRastreio}')">
-                                    <i class="fas fa-sms fa-2x"></i>
-                                    SMS
-                                </button>
-                            </div>
-                            <div class="share-button-wrapper">
-                                <button class="share-button email" onclick="shareEmail('${codigoRastreio}')">
-                                    <i class="fas fa-envelope fa-2x"></i>
-                                    Email
-                                </button>
-                            </div>
-                            <div class="share-button-wrapper">
-                                <button class="share-button print" onclick="printPage()">
-                                    <i class="fas fa-print fa-2x"></i>
-                                    Imprimir
-                                </button>
-                            </div>
-                        </div>
-                    `;
+function renderTrackingInfo(codigo, eventos) {
+  resultDiv.innerHTML = `
+    <h2 class="text-lg font-semibold mb-2">Código: ${codigo}</h2>
+    <div class="border-t border-gray-300 pt-4">
+      ${eventos.map(evento => `
+        <div class="result-item">
+          <div>${getStatusIcon(evento.status)}</div>
+          <hr class="dashed-line">
+          <div>
+            <p class="text-sm text-gray-500">${evento.date} ${evento.hour}</p>
+            <p class="text-md">${evento.status}</p>
+            <p class="text-sm text-gray-600">${evento.subStatus ? evento.subStatus.join(', ') : ''}</p>
+            <p class="text-sm text-gray-600">${evento.location || ''}</p>
+            <p class="text-sm text-gray-600">${evento.destination || ''}</p>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    ${renderShareButtons(codigo)}
+  `;
+}
 
-            } else if (data && data.mensagem) {
-                resultDiv.innerHTML = `<p class="text-red-500">${data.mensagem}</p>`;
-            } else {
-                resultDiv.innerHTML = '<p>Erro ao obter informações de rastreio.</p>';
-            }
-        })
-        .catch(error => {
-            loading.style.display = 'none';
-            trackingForm.style.display = 'block';
-            console.error("Erro ao buscar encomenda:", error);
-            resultDiv.innerHTML = '<p class="text-red-500">Ocorreu um erro ao tentar rastrear a encomenda. Por favor, tente novamente mais tarde.</p>';
-        });
+function getStatusIcon(status) {
+  const lowerStatus = status.toLowerCase();
+  if (lowerStatus.includes('entregue')) return '<i class="fas fa-check-circle fa-4x"></i>';
+  if (lowerStatus.includes('saiu para entrega')) return '<i class="fas fa-truck fa-4x"></i>';
+  if (lowerStatus.includes('encaminhado')) return '<i class="fas fa-arrow-right fa-4x"></i>';
+  if (lowerStatus.includes('postado')) return '<i class="fas fa-box fa-4x"></i>';
+  if (lowerStatus.includes('recebido')) return '<i class="fas fa-receipt fa-4x"></i>';
+  if (lowerStatus.includes('fiscalização')) return '<i class="fas fa-shield-alt fa-4x"></i>';
+  if (lowerStatus.includes('aguardando pagamento')) return '<i class="fas fa-money-bill-alt fa-4x"></i>';
+  if (lowerStatus.includes('pagamento confirmado')) return '<i class="fas fa-money-check-alt fa-4x"></i>';
+  if (lowerStatus.includes('exportação')) return '<i class="fas fa-plane-departure fa-4x"></i>';
+  if (lowerStatus.includes('não autorizado')) return '<i class="fas fa-ban fa-4x"></i>';
+  if (lowerStatus.includes('devolvido')) return '<i class="fas fa-undo-alt fa-4x"></i>';
+  return '<i class="fas fa-question-circle fa-4x"></i>';
+}
+
+function renderShareButtons(codigo) {
+  return `
+    <div class="share-container">
+      ${['WhatsApp', 'SMS', 'Email', 'Imprimir'].map(method => `
+        <div class="share-button-wrapper">
+          <button class="share-button ${method.toLowerCase()}" onclick="share${method}('${codigo}')">
+            <i class="${getShareIcon(method)} fa-2x"></i> ${method}
+          </button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function getShareIcon(method) {
+  switch (method) {
+    case 'WhatsApp': return 'fab fa-whatsapp';
+    case 'SMS': return 'fas fa-sms';
+    case 'Email': return 'fas fa-envelope';
+    case 'Imprimir': return 'fas fa-print';
+    default: return 'fas fa-share';
+  }
 }
 
 function shareWhatsApp(codigo) {
-    let url = `https://api.whatsapp.com/send?text=Rastreamento do objeto ${codigo}: ${window.location.href}`;
-    window.open(url, '_blank');
+  const url = `https://api.whatsapp.com/send?text=Rastreamento do objeto ${codigo}: ${window.location.href}`;
+  window.open(url, '_blank');
 }
 
 function shareSMS(codigo) {
-    let url = `sms:?body=Rastreamento do objeto ${codigo}: ${window.location.href}`;
-    window.open(url, '_blank');
+  const url = `sms:?body=Rastreamento do objeto ${codigo}: ${window.location.href}`;
+  window.open(url, '_blank');
 }
 
 function shareEmail(codigo) {
-    let subject = 'Rastreamento de Encomenda';
-    let body = `Rastreamento do objeto ${codigo}: ${window.location.href}`;
-    let url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(url, '_blank');
+  const subject = 'Rastreamento de Encomenda';
+  const body = `Rastreamento do objeto ${codigo}: ${window.location.href}`;
+  const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(url, '_blank');
 }
 
-function printPage() {
-    window.print();
+function shareImprimir() {
+  window.print();
 }
 
 function addToRecentAccesses(codigo) {
-    let recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
-    recentAccesses = recentAccesses.filter(item => item !== codigo); // Remove o código se já existir
-    recentAccesses.unshift(codigo); // Adiciona o novo código no início
-    if (recentAccesses.length > 8) {
-        recentAccesses.pop(); // Remove o código mais antigo se houver mais de 8
-    }
-    localStorage.setItem('recentAccesses', JSON.stringify(recentAccesses));
-    renderRecentAccesses();
+  let recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
+  recentAccesses = [codigo, ...recentAccesses.filter(c => c !== codigo)].slice(0, 8);
+  localStorage.setItem('recentAccesses', JSON.stringify(recentAccesses));
+  renderRecentAccesses();
 }
 
 function addToHistory(codigo) {
-    let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
-    if (!history.includes(codigo)) {
-        history.push(codigo);
-        localStorage.setItem('trackingHistory', JSON.stringify(history));
-        renderHistory();
-    }
+  let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
+  if (!history.includes(codigo)) {
+    history.push(codigo);
+    localStorage.setItem('trackingHistory', JSON.stringify(history));
+    renderHistory();
+  }
 }
 
 function confirmRemoveFromHistory(codigo) {
-    codigoToRemove = codigo;
-    confirmationDialog.style.visibility = 'visible';
+  codigoToRemove = codigo;
+  confirmationDialog.style.visibility = 'visible';
 }
 
 function removeFromHistory(codigo) {
-    let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
-    history = history.filter(item => item !== codigo);
-    localStorage.setItem('trackingHistory', JSON.stringify(history));
-    renderHistory();
+  let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
+  history = history.filter(item => item !== codigo);
+  localStorage.setItem('trackingHistory', JSON.stringify(history));
+  renderHistory();
 }
 
 function renderRecentAccesses() {
-    let recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
-    recentAccessesDiv.innerHTML = '';
-    if (recentAccesses.length === 0) {
-        recentAccessesSection.style.display = 'none';
-    } else {
-        recentAccessesSection.style.display = 'block';
-        recentAccesses.forEach(codigo => {
-            recentAccessesDiv.innerHTML += `
-                <div class="history-item">
-                    <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
-                </div>
-            `;
-        });
-    }
+  const recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
+  recentAccessesDiv.innerHTML = recentAccesses.length ? 
+    recentAccesses.map(codigo => `
+      <div class="history-item">
+        <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
+      </div>
+    `).join('') : '';
+
+  recentAccessesSection.style.display = recentAccesses.length ? 'block' : 'none';
 }
 
 function renderHistory() {
-    let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
-    historyDiv.innerHTML = '';
-    if (history.length === 0) {
-        historySection.style.display = 'none';
-    } else {
-        historySection.style.display = 'block';
-        history.forEach(codigo => {
-            historyDiv.innerHTML += `
-                <div class="history-item">
-                    <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
-                    <button onclick="confirmRemoveFromHistory('${codigo}')">Remover</button>
-                </div>
-            `;
-        });
-    }
+  const history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
+  historyDiv.innerHTML = history.length ?
+    history.map(codigo => `
+      <div class="history-item">
+        <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
+        <button onclick="confirmRemoveFromHistory('${codigo}')">Remover</button>
+      </div>
+    `).join('') : '';
+
+  historySection.style.display = history.length ? 'block' : 'none';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    renderRecentAccesses();
-    renderHistory();
+  renderRecentAccesses();
+  renderHistory();
 });
