@@ -1,64 +1,176 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Seleciona o botão de buscar e o campo de código de rastreamento
-    const buscarButton = document.getElementById('buscar-encomenda');
-    const codigoInput = document.getElementById('codigo');
-    const loadingIndicator = document.getElementById('loading');
-    const resultContainer = document.getElementById('result');
+document.addEventListener("DOMContentLoaded", () => {
+    const buscarBtn = document.getElementById("buscar-encomenda");
+    const codigoInput = document.getElementById("codigo");
+    const loadingDiv = document.getElementById("loading");
+    const resultDiv = document.getElementById("result");
+    const historyDiv = document.getElementById("history");
+    const recentAccessesDiv = document.getElementById("recent-accesses");
+    const historySection = document.getElementById("history-section");
+    const recentAccessesSection = document.getElementById("recent-accesses-section");
 
-    // Evento para o clique no botão de busca
-    buscarButton.addEventListener('click', async () => {
-        const codigo = codigoInput.value.trim(); // Pega o código do input e remove espaços extras
-        
-        // Valida se o código não está vazio
-        if (!codigo) {
-            alert('Por favor, insira um código de rastreamento!');
+    const confirmationDialog = document.getElementById("confirmation-dialog");
+    const confirmYes = document.getElementById("confirm-yes");
+    const confirmNo = document.getElementById("confirm-no");
+
+    let codeToDelete = null;
+
+    const showLoading = () => loadingDiv.style.display = "block";
+    const hideLoading = () => loadingDiv.style.display = "none";
+    const showResult = () => resultDiv.style.display = "block";
+    const hideResult = () => resultDiv.style.display = "none";
+
+    const getTrackingData = async (code) => {
+        try {
+            showLoading();
+            hideResult();
+            resultDiv.innerHTML = "";
+
+            const response = await fetch("rastrear.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code })
+            });
+
+            const text = await response.text();
+            console.log("Resposta bruta do servidor:", text);
+
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (error) {
+                throw new Error("Resposta inválida do servidor.");
+            }
+
+            if (data.erro) {
+                throw new Error(data.erro);
+            }
+
+            displayResult(data);
+            saveToHistory(code, data);
+        } catch (error) {
+            console.error("Erro no rastreamento:", error);
+            resultDiv.innerHTML = `<p class="error">Erro ao processar a resposta do servidor. Tente novamente mais tarde.</p>`;
+            showResult();
+        } finally {
+            hideLoading();
+        }
+    };
+
+    const displayResult = (data) => {
+        const eventos = data.events || [];
+        if (!eventos.length) {
+            resultDiv.innerHTML = "<p class='info'>Nenhum evento encontrado para esse código.</p>";
+        } else {
+            const content = eventos.map(evento => `
+                <div class="evento">
+                    <p><strong>Data:</strong> ${evento.date}</p>
+                    <p><strong>Local:</strong> ${evento.location}</p>
+                    <p><strong>Status:</strong> ${evento.status}</p>
+                </div>
+            `).join("");
+            resultDiv.innerHTML = content;
+        }
+        showResult();
+    };
+
+    const saveToHistory = (code, data) => {
+        const historico = JSON.parse(localStorage.getItem("historico")) || {};
+        historico[code] = data;
+        localStorage.setItem("historico", JSON.stringify(historico));
+        loadHistory();
+    };
+
+    const loadHistory = () => {
+        const historico = JSON.parse(localStorage.getItem("historico")) || {};
+        historyDiv.innerHTML = "";
+
+        if (Object.keys(historico).length) {
+            historySection.style.display = "block";
+        } else {
+            historySection.style.display = "none";
+        }
+
+        for (const [code, data] of Object.entries(historico)) {
+            const eventos = data.events || [];
+            const ultimaAtualizacao = eventos.length ? eventos[0].status : "Sem informações";
+
+            const item = document.createElement("div");
+            item.className = "history-item";
+            item.innerHTML = `
+                <p><strong>${code}</strong></p>
+                <p>${ultimaAtualizacao}</p>
+                <button class="remover" data-code="${code}">Remover</button>
+            `;
+            historyDiv.appendChild(item);
+        }
+
+        document.querySelectorAll(".remover").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                codeToDelete = e.target.getAttribute("data-code");
+                confirmationDialog.style.display = "flex";
+            });
+        });
+    };
+
+    confirmYes.addEventListener("click", () => {
+        if (codeToDelete) {
+            const historico = JSON.parse(localStorage.getItem("historico")) || {};
+            delete historico[codeToDelete];
+            localStorage.setItem("historico", JSON.stringify(historico));
+            codeToDelete = null;
+            loadHistory();
+        }
+        confirmationDialog.style.display = "none";
+    });
+
+    confirmNo.addEventListener("click", () => {
+        codeToDelete = null;
+        confirmationDialog.style.display = "none";
+    });
+
+    buscarBtn.addEventListener("click", () => {
+        const code = codigoInput.value.trim().toUpperCase();
+        if (!code) {
+            alert("Por favor, insira um código de rastreamento.");
             return;
         }
 
-        // Exibe o indicador de carregamento
-        loadingIndicator.style.display = 'block';
-        resultContainer.innerHTML = ''; // Limpa resultados anteriores
-
-        try {
-            // Envia a requisição para o PHP
-            const response = await fetch('/rastrear.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ code: codigo })
-            });
-
-            // Converte a resposta para texto
-            const text = await response.text();
-            console.log('Resposta do servidor (texto bruto):', text);
-
-            // Tenta converter a resposta para JSON
-            try {
-                const data = JSON.parse(text);
-                console.log('Resposta do servidor (JSON):', data);
-
-                if (data.erro) {
-                    // Exibe erro se a API retornar um erro
-                    resultContainer.innerHTML = `<p>Erro: ${data.erro}</p>`;
-                } else {
-                    // Caso a resposta seja válida, processa os dados
-                    // Aqui você pode customizar a exibição do rastreamento, conforme necessário
-                    resultContainer.innerHTML = `
-                        <h2>Informações do Rastreamento:</h2>
-                        <pre>${JSON.stringify(data, null, 2)}</pre>
-                    `;
-                }
-            } catch (jsonError) {
-                console.error('Erro ao processar a resposta JSON:', jsonError);
-                resultContainer.innerHTML = `<p>Erro ao processar a resposta do servidor. Tente novamente mais tarde.</p>`;
-            }
-        } catch (fetchError) {
-            console.error('Erro na requisição Fetch:', fetchError);
-            resultContainer.innerHTML = `<p>Erro na conexão com o servidor. Tente novamente mais tarde.</p>`;
-        } finally {
-            // Esconde o indicador de carregamento após a resposta
-            loadingIndicator.style.display = 'none';
-        }
+        getTrackingData(code);
+        updateRecentAccesses(code);
     });
+
+    const updateRecentAccesses = (code) => {
+        let acessos = JSON.parse(localStorage.getItem("recentes")) || [];
+        acessos = acessos.filter(c => c !== code);
+        acessos.unshift(code);
+        acessos = acessos.slice(0, 5);
+        localStorage.setItem("recentes", JSON.stringify(acessos));
+        loadRecentAccesses();
+    };
+
+    const loadRecentAccesses = () => {
+        const acessos = JSON.parse(localStorage.getItem("recentes")) || [];
+        recentAccessesDiv.innerHTML = "";
+
+        if (acessos.length) {
+            recentAccessesSection.style.display = "block";
+        } else {
+            recentAccessesSection.style.display = "none";
+        }
+
+        acessos.forEach(code => {
+            const item = document.createElement("button");
+            item.className = "recent-code";
+            item.textContent = code;
+            item.addEventListener("click", () => {
+                codigoInput.value = code;
+                getTrackingData(code);
+            });
+            recentAccessesDiv.appendChild(item);
+        });
+    };
+
+    // Inicialização
+    loadHistory();
+    loadRecentAccesses();
 });
