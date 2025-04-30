@@ -1,176 +1,258 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const buscarBtn = document.getElementById("buscar-encomenda");
-    const codigoInput = document.getElementById("codigo");
-    const loadingDiv = document.getElementById("loading");
-    const resultDiv = document.getElementById("result");
-    const historyDiv = document.getElementById("history");
-    const recentAccessesDiv = document.getElementById("recent-accesses");
-    const historySection = document.getElementById("history-section");
-    const recentAccessesSection = document.getElementById("recent-accesses-section");
+let loading = document.getElementById('loading');
+let trackingForm = document.getElementById('tracking-form');
+let resultDiv = document.getElementById('result');
+let codigoInput = document.getElementById('codigo');
+let buscarEncomendaBtn = document.getElementById('buscar-encomenda');
+let recentAccessesSection = document.getElementById('recent-accesses-section');
+let recentAccessesDiv = document.getElementById('recent-accesses');
+let historySection = document.getElementById('history-section');
+let historyDiv = document.getElementById('history');
+let confirmationDialog = document.getElementById('confirmation-dialog');
+let confirmYesBtn = document.getElementById('confirm-yes');
+let confirmNoBtn = document.getElementById('confirm-no');
+let codigoToRemove = null;
 
-    const confirmationDialog = document.getElementById("confirmation-dialog");
-    const confirmYes = document.getElementById("confirm-yes");
-    const confirmNo = document.getElementById("confirm-no");
+buscarEncomendaBtn.addEventListener('click', () => {
+    let codigo = codigoInput.value;
+    if (isValidTrackingCode(codigo)) {
+        loading.style.display = 'flex';
+        trackingForm.style.display = 'none';
+        resultDiv.innerHTML = '';
 
-    let codeToDelete = null;
+        buscarEncomenda(codigo);
+        addToRecentAccesses(codigo);
+        addToHistory(codigo);
+    } else {
+        resultDiv.innerHTML = '<p style="color: red;">Por favor, digite um código de rastreio válido. Exemplo: AB123456789BR</p>';
+    }
+});
 
-    const showLoading = () => loadingDiv.style.display = "block";
-    const hideLoading = () => loadingDiv.style.display = "none";
-    const showResult = () => resultDiv.style.display = "block";
-    const hideResult = () => resultDiv.style.display = "none";
+confirmYesBtn.addEventListener('click', () => {
+    if (codigoToRemove) {
+        removeFromHistory(codigoToRemove);
+        codigoToRemove = null;
+    }
+    confirmationDialog.style.visibility = 'hidden';
+});
 
-    const getTrackingData = async (code) => {
-        try {
-            showLoading();
-            hideResult();
-            resultDiv.innerHTML = "";
+confirmNoBtn.addEventListener('click', () => {
+    codigoToRemove = null;
+    confirmationDialog.style.visibility = 'hidden';
+});
 
-            const response = await fetch("rastrear.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code })
-            });
+function isValidTrackingCode(codigo) {
+    let regex = /^[A-Z]{2}\d{9}[A-Z]{2}$/;
+    return regex.test(codigo);
+}
 
-            const text = await response.text();
-            console.log("Resposta bruta do servidor:", text);
+function buscarEncomenda(codigo) {
+    let user = 'teste';
+    let token = '1abcd00b2731640e886fb41a8a9671ad1434c599dbaa0a0de9a5aa619f29a83f';
 
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch (error) {
-                throw new Error("Resposta inválida do servidor.");
+    let url = `https://api.linketrack.com/track/json?user=${user}&token=${token}&codigo=${codigo}`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            loading.style.display = 'none';
+            trackingForm.style.display = 'block';
+
+            if (data) {
+                let eventos = data.eventos;
+                let codigo = data.codigo;
+
+                resultDiv.innerHTML = `
+                    <h2 class="text-lg font-semibold mb-2">Código: ${codigo}</h2>
+                    <div class="border-t border-gray-300 pt-4">
+                `;
+
+                eventos.forEach(evento => {
+                    let icon = '';
+                    switch (true) {
+                        case evento.status.includes('Objeto entregue ao destinatário'):
+                            icon = '<i class="fas fa-check-circle fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Objeto saiu para entrega ao destinatário'):
+                            icon = '<i class="fas fa-truck fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Objeto encaminhado'):
+                            icon = '<i class="fas fa-arrow-right fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Objeto postado'):
+                            icon = '<i class="fas fa-box fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Objeto recebido pelos Correios'):
+                            icon = '<i class="fas fa-receipt fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Encaminhado para fiscalização aduaneira'):
+                            icon = '<i class="fas fa-shield-alt fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Fiscalização aduaneira finalizada'):
+                            icon = '<i class="fas fa-check-double fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Aguardando pagamento'):
+                            icon = '<i class="fas fa-money-bill-alt fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Pagamento confirmado'):
+                            icon = '<i class="fas fa-money-check-alt fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Objeto recebido na unidade de exportação no país de origem'):
+                            icon = '<i class="fas fa-plane-departure fa-4x"></i>';
+                            break;
+                        case evento.status.includes('A importação do objeto/conteúdo não foi autorizada pelos órgãos fiscalizadores'):
+                            icon = '<i class="fas fa-ban fa-4x"></i>';
+                            break;
+                        case evento.status.includes('Objeto devolvido ao país de origem'):
+                            icon = '<i class="fas fa-undo-alt fa-4x"></i>';
+                            break;
+                        default:
+                            icon = '<i class="fas fa-question-circle fa-4x"></i>';
+                            break;
+                    }
+
+                    resultDiv.innerHTML += `
+                        <div class="result-item">
+                            <div>${icon}</div>
+                            <hr class="dashed-line">
+                            <div>
+                                <p class="text-sm text-gray-500">${evento.data} ${evento.hora}</p>
+                                <p class="text-md">${evento.status}</p>
+                                <p class="text-sm text-gray-600">${evento.subStatus[0] ? evento.subStatus[0] : ''}</p>
+                                <p class="text-sm text-gray-600">${evento.subStatus[1] ? evento.subStatus[1] : ''}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Adicionar opções de compartilhar e imprimir
+                resultDiv.innerHTML += `
+                    </div>
+                    <div class="share-container">
+                        <div class="share-button-wrapper">
+                            <button class="share-button whatsapp" onclick="shareWhatsApp('${codigo}')">
+                                <i class="fab fa-whatsapp fa-2x"></i>
+                                WhatsApp
+                            </button>
+                        </div>
+                        <div class="share-button-wrapper">
+                            <button class="share-button sms" onclick="shareSMS('${codigo}')">
+                                <i class="fas fa-sms fa-2x"></i>
+                                SMS
+                            </button>
+                        </div>
+                        <div class="share-button-wrapper">
+                            <button class="share-button email" onclick="shareEmail('${codigo}')">
+                                <i class="fas fa-envelope fa-2x"></i>
+                                Email
+                            </button>
+                        </div>
+                        <div class="share-button-wrapper">
+                            <button class="share-button print" onclick="printPage()">
+                                <i class="fas fa-print fa-2x"></i>
+                                Imprimir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = 'Erro ao decodificar a resposta JSON.';
             }
+        })
+        .catch(error => {
+            console.error(error);
+            buscarEncomenda(codigo);
+        });
+}
 
-            if (data.erro) {
-                throw new Error(data.erro);
-            }
+function shareWhatsApp(codigo) {
+    let url = `https://api.whatsapp.com/send?text=Rastreamento do objeto ${codigo}: ${window.location.href}`;
+    window.open(url, '_blank');
+}
 
-            displayResult(data);
-            saveToHistory(code, data);
-        } catch (error) {
-            console.error("Erro no rastreamento:", error);
-            resultDiv.innerHTML = `<p class="error">Erro ao processar a resposta do servidor. Tente novamente mais tarde.</p>`;
-            showResult();
-        } finally {
-            hideLoading();
-        }
-    };
+function shareSMS(codigo) {
+    let url = `sms:?body=Rastreamento do objeto ${codigo}: ${window.location.href}`;
+    window.open(url, '_blank');
+}
 
-    const displayResult = (data) => {
-        const eventos = data.events || [];
-        if (!eventos.length) {
-            resultDiv.innerHTML = "<p class='info'>Nenhum evento encontrado para esse código.</p>";
-        } else {
-            const content = eventos.map(evento => `
-                <div class="evento">
-                    <p><strong>Data:</strong> ${evento.date}</p>
-                    <p><strong>Local:</strong> ${evento.location}</p>
-                    <p><strong>Status:</strong> ${evento.status}</p>
+function shareEmail(codigo) {
+    let subject = 'Rastreamento de Encomenda';
+    let body = `Rastreamento do objeto ${codigo}: ${window.location.href}`;
+    let url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(url, '_blank');
+}
+
+function printPage() {
+    window.print();
+}
+
+function addToRecentAccesses(codigo) {
+    let recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
+    recentAccesses = recentAccesses.filter(item => item !== codigo); // Remove o código se já existir
+    recentAccesses.unshift(codigo); // Adiciona o novo código no início
+    if (recentAccesses.length > 8) {
+        recentAccesses.pop(); // Remove o código mais antigo se houver mais de 8
+    }
+    localStorage.setItem('recentAccesses', JSON.stringify(recentAccesses));
+    renderRecentAccesses();
+}
+
+function addToHistory(codigo) {
+    let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
+    if (!history.includes(codigo)) {
+        history.push(codigo);
+        localStorage.setItem('trackingHistory', JSON.stringify(history));
+        renderHistory();
+    }
+}
+
+function confirmRemoveFromHistory(codigo) {
+    codigoToRemove = codigo;
+    confirmationDialog.style.visibility = 'visible';
+}
+
+function removeFromHistory(codigo) {
+    let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
+    history = history.filter(item => item !== codigo);
+    localStorage.setItem('trackingHistory', JSON.stringify(history));
+    renderHistory();
+}
+
+function renderRecentAccesses() {
+    let recentAccesses = JSON.parse(localStorage.getItem('recentAccesses')) || [];
+    recentAccessesDiv.innerHTML = '';
+    if (recentAccesses.length === 0) {
+        recentAccessesSection.style.display = 'none';
+    } else {
+        recentAccessesSection.style.display = 'block';
+        recentAccesses.forEach(codigo => {
+            recentAccessesDiv.innerHTML += `
+                <div class="history-item">
+                    <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
                 </div>
-            `).join("");
-            resultDiv.innerHTML = content;
-        }
-        showResult();
-    };
-
-    const saveToHistory = (code, data) => {
-        const historico = JSON.parse(localStorage.getItem("historico")) || {};
-        historico[code] = data;
-        localStorage.setItem("historico", JSON.stringify(historico));
-        loadHistory();
-    };
-
-    const loadHistory = () => {
-        const historico = JSON.parse(localStorage.getItem("historico")) || {};
-        historyDiv.innerHTML = "";
-
-        if (Object.keys(historico).length) {
-            historySection.style.display = "block";
-        } else {
-            historySection.style.display = "none";
-        }
-
-        for (const [code, data] of Object.entries(historico)) {
-            const eventos = data.events || [];
-            const ultimaAtualizacao = eventos.length ? eventos[0].status : "Sem informações";
-
-            const item = document.createElement("div");
-            item.className = "history-item";
-            item.innerHTML = `
-                <p><strong>${code}</strong></p>
-                <p>${ultimaAtualizacao}</p>
-                <button class="remover" data-code="${code}">Remover</button>
             `;
-            historyDiv.appendChild(item);
-        }
-
-        document.querySelectorAll(".remover").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                codeToDelete = e.target.getAttribute("data-code");
-                confirmationDialog.style.display = "flex";
-            });
         });
-    };
+    }
+}
 
-    confirmYes.addEventListener("click", () => {
-        if (codeToDelete) {
-            const historico = JSON.parse(localStorage.getItem("historico")) || {};
-            delete historico[codeToDelete];
-            localStorage.setItem("historico", JSON.stringify(historico));
-            codeToDelete = null;
-            loadHistory();
-        }
-        confirmationDialog.style.display = "none";
-    });
-
-    confirmNo.addEventListener("click", () => {
-        codeToDelete = null;
-        confirmationDialog.style.display = "none";
-    });
-
-    buscarBtn.addEventListener("click", () => {
-        const code = codigoInput.value.trim().toUpperCase();
-        if (!code) {
-            alert("Por favor, insira um código de rastreamento.");
-            return;
-        }
-
-        getTrackingData(code);
-        updateRecentAccesses(code);
-    });
-
-    const updateRecentAccesses = (code) => {
-        let acessos = JSON.parse(localStorage.getItem("recentes")) || [];
-        acessos = acessos.filter(c => c !== code);
-        acessos.unshift(code);
-        acessos = acessos.slice(0, 5);
-        localStorage.setItem("recentes", JSON.stringify(acessos));
-        loadRecentAccesses();
-    };
-
-    const loadRecentAccesses = () => {
-        const acessos = JSON.parse(localStorage.getItem("recentes")) || [];
-        recentAccessesDiv.innerHTML = "";
-
-        if (acessos.length) {
-            recentAccessesSection.style.display = "block";
-        } else {
-            recentAccessesSection.style.display = "none";
-        }
-
-        acessos.forEach(code => {
-            const item = document.createElement("button");
-            item.className = "recent-code";
-            item.textContent = code;
-            item.addEventListener("click", () => {
-                codigoInput.value = code;
-                getTrackingData(code);
-            });
-            recentAccessesDiv.appendChild(item);
+function renderHistory() {
+    let history = JSON.parse(localStorage.getItem('trackingHistory')) || [];
+    historyDiv.innerHTML = '';
+    if (history.length === 0) {
+        historySection.style.display = 'none';
+    } else {
+        historySection.style.display = 'block';
+        history.forEach(codigo => {
+            historyDiv.innerHTML += `
+                <div class="history-item">
+                    <span onclick="buscarEncomenda('${codigo}')">${codigo}</span>
+                    <button onclick="confirmRemoveFromHistory('${codigo}')">Remover</button>
+                </div>
+            `;
         });
-    };
+    }
+}
 
-    // Inicialização
-    loadHistory();
-    loadRecentAccesses();
+document.addEventListener('DOMContentLoaded', () => {
+    renderRecentAccesses();
+    renderHistory();
 });
